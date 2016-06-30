@@ -1,7 +1,9 @@
-package com.android.renzo.photofeed;
+package com.android.renzo.photofeed.login.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.android.renzo.photofeed.R;
 
 public class LoginActivity extends AppCompatActivity {
 

@@ -23,7 +23,7 @@
         <meta-data
             android:name="CLOUDINARY_URL"
             android:value="@string/CLOUDINARY_URL"/>
-        <activity android:name=".LoginActivity" android:noHistory="true">
+        <activity android:name=".login.ui.LoginActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
