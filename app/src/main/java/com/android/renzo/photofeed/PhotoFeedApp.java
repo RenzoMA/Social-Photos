@@ -30,7 +30,6 @@ public class PhotoFeedApp extends Application {
 
     private void initFirebase() {
         Firebase.setAndroidContext(this);
-
     }
 
     public  String getEmailKey() {
