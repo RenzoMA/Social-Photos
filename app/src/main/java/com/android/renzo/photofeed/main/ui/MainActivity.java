@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,10 +21,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.renzo.photofeed.PhotoFeedApp;
+import com.android.renzo.photofeed.PhotoListFragment;
+import com.android.renzo.photofeed.PhotoMapFragment;
 import com.android.renzo.photofeed.R;
 import com.android.renzo.photofeed.login.ui.LoginActivity;
 import com.android.renzo.photofeed.main.MainPresenter;
 import com.android.renzo.photofeed.main.adapters.MainSectionsPagerAdapter;
+import com.android.renzo.photofeed.main.events.MainEvent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -108,6 +112,41 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     private void setupInjection() {
 
+        String[] titles = new String[] {getString(R.string.main_title_list),
+                getString(R.string.main_title_map)};
+
+        Fragment[] fragments = new Fragment[]{new PhotoListFragment(),
+        new PhotoMapFragment()};
+
+        adapter = new MainSectionsPagerAdapter(getSupportFragmentManager(), titles, fragments);
+        sharedPreferences = getSharedPreferences(app.getSharedPreferencesName(), MODE_PRIVATE);
+        presenter = new MainPresenter() {
+            @Override
+            public void onCreate() {
+
+            }
+
+            @Override
+            public void onDestroy() {
+
+            }
+
+            @Override
+            public void logout() {
+
+            }
+
+            @Override
+            public void uploadPhoto(Location location, String path) {
+
+            }
+
+            @Override
+            public void onEVentMainThread(MainEvent event) {
+
+            }
+        };
+
     }
 
     @Override
@@ -154,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         }
         if(LocationServices.FusedLocationApi.getLocationAvailability(apiClient).isLocationAvailable()){
             lastKnowLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+            Snackbar.make(viewPager, lastKnowLocation.toString(), Snackbar.LENGTH_SHORT).show();
         }else{
             Snackbar.make(viewPager, R.string.main_error_location_notavailable, Snackbar.LENGTH_SHORT).show();
         }
