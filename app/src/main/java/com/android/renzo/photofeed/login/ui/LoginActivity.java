@@ -12,11 +12,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.android.renzo.photofeed.MainActivity;
+import com.android.renzo.photofeed.main.ui.MainActivity;
 import com.android.renzo.photofeed.PhotoFeedApp;
 import com.android.renzo.photofeed.R;
 import com.android.renzo.photofeed.login.LoginPresenter;
-import com.android.renzo.photofeed.login.events.LoginEvent;
 
 import javax.inject.Inject;
 

@@ -1,7 +1,9 @@
-package com.android.renzo.photofeed;
+package com.android.renzo.photofeed.main.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.android.renzo.photofeed.R;
 
 public class MainActivity extends AppCompatActivity {
 
