@@ -55,7 +55,7 @@
             android:id="@+id/btnSignin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login.button.signin" />
+            android:text="@string/login.message.signin" />
 
         <Button
             android:id="@+id/btnSignup"

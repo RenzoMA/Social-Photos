@@ -3,6 +3,11 @@ package com.android.renzo.photofeed;
 import android.app.Application;
 
 import com.android.renzo.photofeed.domain.di.DomainModule;
+import com.android.renzo.photofeed.libs.di.LibsModule;
+import com.android.renzo.photofeed.login.di.DaggerLoginComponent;
+import com.android.renzo.photofeed.login.di.LoginComponent;
+import com.android.renzo.photofeed.login.di.LoginModule;
+import com.android.renzo.photofeed.login.ui.LoginView;
 import com.firebase.client.Firebase;
 
 /**
@@ -11,7 +16,7 @@ import com.firebase.client.Firebase;
 public class PhotoFeedApp extends Application {
     private final static String EMAIL_KEY = "email";
     private final static String SHARED_PREFERENCES_NAME = "UserPrefs";
-    private final static String FIREBASE_URL = "https://androidphoto.firebaseio.com/";
+    private final static String FIREBASE_URL = "https://android-chat-exa.firebaseIO.com/";
     private PhotoFeedAppModule photoFeedAppModule;
     private DomainModule domainModule;
 
@@ -40,7 +45,17 @@ public class PhotoFeedApp extends Application {
         return SHARED_PREFERENCES_NAME;
     }
 
-    public  String getFirebaseUrl() {
-        return FIREBASE_URL;
+    public LoginComponent getLoginComponent(LoginView view){
+        return DaggerLoginComponent
+                .builder()
+                .photoFeedAppModule(photoFeedAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(null))
+                .loginModule(new LoginModule(view))
+                .build();
+
+
     }
+
+
 }

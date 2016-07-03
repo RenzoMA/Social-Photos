@@ -12,6 +12,15 @@ public class LoginEvent {
 
     private int eventType;
     private String errorMessage;
+    private String currentUserEmail;
+
+    public String getCurrentUserEmail() {
+        return currentUserEmail;
+    }
+
+    public void setCurrentUserEmail(String currentUserEmail) {
+        this.currentUserEmail = currentUserEmail;
+    }
 
     public int getEventType() {
         return eventType;
