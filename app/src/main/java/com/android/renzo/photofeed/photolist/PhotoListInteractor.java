@@ -7,6 +7,6 @@ import com.android.renzo.photofeed.entities.Photo;
  */
 public interface PhotoListInteractor {
     void subscribe();
-    void onsubscribe();
+    void unsubscribe();
     void removePhoto(Photo photo);
 }
