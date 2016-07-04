@@ -94,12 +94,12 @@ public class PhotoFeedApp extends Application {
                 .build();
     }
 
-    public PhotoMapComponent getPhotoMapComponent(PhotoMapFragment fragment, PhotoMapView view) {
+    public PhotoMapComponent getPhotoMapComponent(PhotoMapFragment fragment, PhotoMapView view,Activity activity) {
         return DaggerPhotoMapComponent
                 .builder().photoFeedAppModule(photoFeedAppModule)
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(fragment))
-                .photoMapModule(new PhotoMapModule(view))
+                .photoMapModule(new PhotoMapModule(view,activity))
                 .build();
     }
 

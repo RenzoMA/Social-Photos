@@ -1,5 +1,7 @@
 package com.android.renzo.photofeed.photomap.di;
 
+import android.app.Activity;
+
 import com.android.renzo.photofeed.domain.FirebaseAPI;
 import com.android.renzo.photofeed.libs.base.EventBus;
 import com.android.renzo.photofeed.photomap.PhotoMapInteractor;
@@ -21,9 +23,11 @@ import dagger.Provides;
 @Module
 public class PhotoMapModule {
     private PhotoMapView view;
+    private Activity activity;
 
-    public PhotoMapModule(PhotoMapView view) {
+    public PhotoMapModule(PhotoMapView view, Activity activity) {
         this.view = view;
+        this.activity = activity;
     }
 
     @Provides
@@ -49,4 +53,11 @@ public class PhotoMapModule {
     PhotoMapRepository providesPhotoMapRepository(EventBus eventBus, FirebaseAPI firebaseAPI){
         return new PhotoMapRepositoryImpl(eventBus, firebaseAPI);
     }
+
+    @Provides
+    @Singleton
+    Activity providesActivity(){
+        return this.activity;
+    }
+
 }

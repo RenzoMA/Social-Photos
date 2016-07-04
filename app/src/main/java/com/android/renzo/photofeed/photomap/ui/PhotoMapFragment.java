@@ -15,10 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.renzo.photofeed.PhotoFeedApp;
 import com.android.renzo.photofeed.R;
+import com.android.renzo.photofeed.domain.Util;
 import com.android.renzo.photofeed.entities.Photo;
+import com.android.renzo.photofeed.libs.base.ImageLoader;
 import com.android.renzo.photofeed.photomap.PhotoMapPresenter;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,12 +40,13 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapReadyCallback {
+public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     @Bind(R.id.container)
@@ -49,6 +54,12 @@ public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapRea
 
     @Inject
     PhotoMapPresenter presenter;
+
+    @Inject
+    Util util;
+
+    @Inject
+    ImageLoader imageLoader;
 
     private GoogleMap map;
     private HashMap<Marker,Photo> markers;
@@ -67,7 +78,7 @@ public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapRea
 
     private void setupInjection() {
         PhotoFeedApp app = (PhotoFeedApp) getActivity().getApplication();
-        app.getPhotoMapComponent(this,this).inject(this);
+        app.getPhotoMapComponent(this,this,getActivity()).inject(this);
 
     }
 
@@ -132,6 +143,7 @@ public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         presenter.subscribe();
+        map.setInfoWindowAdapter(this);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -157,5 +169,24 @@ public class PhotoMapFragment extends Fragment implements PhotoMapView, OnMapRea
             }
         }
 
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.info_window,null);
+        Photo photo = markers.get(marker);
+        CircleImageView imgAvatar = (CircleImageView) view.findViewById(R.id.imgAvatar);
+        TextView txtUser = (TextView) view.findViewById(R.id.txtUser);
+        ImageView imgMain = (ImageView) view.findViewById(R.id.imgMain);
+        imageLoader.load(imgMain, photo.getUrl());
+        imageLoader.load(imgAvatar, util.getAvatarUrl(photo.getEmail()));
+        txtUser.setText(photo.getEmail());
+
+        return view;
     }
 }
