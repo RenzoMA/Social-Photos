@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tabs)

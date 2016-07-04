@@ -21,7 +21,11 @@ import com.android.renzo.photofeed.photolist.di.PhotoListModule;
 import com.android.renzo.photofeed.photolist.ui.PhotoListFragment;
 import com.android.renzo.photofeed.photolist.ui.PhotoListView;
 import com.android.renzo.photofeed.photolist.ui.adapters.OnItemClickListener;
+import com.android.renzo.photofeed.photomap.di.DaggerPhotoMapComponent;
 import com.android.renzo.photofeed.photomap.di.PhotoMapComponent;
+import com.android.renzo.photofeed.photomap.di.PhotoMapModule;
+import com.android.renzo.photofeed.photomap.ui.PhotoMapFragment;
+import com.android.renzo.photofeed.photomap.ui.PhotoMapView;
 import com.firebase.client.Firebase;
 
 /**
@@ -90,6 +94,15 @@ public class PhotoFeedApp extends Application {
                 .build();
     }
 
-    //public PhotoMapComponent getPhotoManComponent(PhotoMapComponent, Photo)
+    public PhotoMapComponent getPhotoMapComponent(PhotoMapFragment fragment, PhotoMapView view) {
+        return DaggerPhotoMapComponent
+                .builder().photoFeedAppModule(photoFeedAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(fragment))
+                .photoMapModule(new PhotoMapModule(view))
+                .build();
+    }
+
+
 
 }
