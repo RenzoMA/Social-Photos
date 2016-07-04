@@ -21,6 +21,7 @@ import com.android.renzo.photofeed.photolist.di.PhotoListModule;
 import com.android.renzo.photofeed.photolist.ui.PhotoListFragment;
 import com.android.renzo.photofeed.photolist.ui.PhotoListView;
 import com.android.renzo.photofeed.photolist.ui.adapters.OnItemClickListener;
+import com.android.renzo.photofeed.photomap.di.PhotoMapComponent;
 import com.firebase.client.Firebase;
 
 /**
@@ -88,5 +89,7 @@ public class PhotoFeedApp extends Application {
                 .photoListModule(new PhotoListModule(view,onItemClickListener,activity))
                 .build();
     }
+
+    //public PhotoMapComponent getPhotoManComponent(PhotoMapComponent, Photo)
 
 }

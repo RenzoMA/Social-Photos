@@ -28,7 +28,7 @@ import android.view.MenuItem;
 
 import com.android.renzo.photofeed.PhotoFeedApp;
 import com.android.renzo.photofeed.photolist.ui.PhotoListFragment;
-import com.android.renzo.photofeed.PhotoMapFragment;
+import com.android.renzo.photofeed.photomap.ui.PhotoMapFragment;
 import com.android.renzo.photofeed.R;
 import com.android.renzo.photofeed.login.ui.LoginActivity;
 import com.android.renzo.photofeed.main.MainPresenter;
