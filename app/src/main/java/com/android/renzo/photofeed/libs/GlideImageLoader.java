@@ -31,7 +31,7 @@ public class GlideImageLoader implements ImageLoader {
         }else{
             glidRequestManager.load(URL)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .override(700,700Layout)
+                    .override(700,700)
                     .centerCrop()
                     .into(imageView);
         }
