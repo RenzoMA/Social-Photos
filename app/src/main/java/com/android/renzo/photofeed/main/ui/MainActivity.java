@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -39,7 +40,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
     private PhotoFeedApp app;
     private String photoPath;
     private boolean resolvingError = false;
-    private static final int REQUEST_PICTURE = 0;
+    private static final int REQUEST_PICTURE = 1;
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     private static final int REQUEST_RESOLVE_ERROR = 0;
 
@@ -153,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
             @Override
             public void uploadPhoto(Location location, String path) {
-
+                if(path != null){
+                    showSnackbar(path);
+                }
             }
 
             @Override
@@ -194,6 +200,31 @@ public class MainActivity extends AppCompatActivity implements MainView,
         presenter.onDestroy();
         super.onDestroy();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_RESOLVE_ERROR){
+            resolvingError = false;
+            if(resultCode == RESULT_OK){
+                if(!apiClient.isConnecting() && apiClient.isConnected()){
+                    apiClient.connect();
+                }
+
+            }
+        } else if(requestCode == REQUEST_PICTURE){
+            if(resultCode == RESULT_OK){
+                boolean fromCamera = (data == null || data.getData() == null);
+                if(fromCamera){
+                    addToGallery();
+                } else {
+                    photoPath = getRealPathFromURI(data.getData());
+                }
+                presenter.uploadPhoto(lastKnowLocation, photoPath);
+            }
+        }
+    }
+
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -208,9 +239,8 @@ public class MainActivity extends AppCompatActivity implements MainView,
         }
         if(LocationServices.FusedLocationApi.getLocationAvailability(apiClient).isLocationAvailable()){
             lastKnowLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
-            Snackbar.make(viewPager, lastKnowLocation.toString(), Snackbar.LENGTH_SHORT).show();
         }else{
-            Snackbar.make(viewPager, R.string.main_error_location_notavailable, Snackbar.LENGTH_SHORT).show();
+            showSnackbar(R.string.main_error_location_notavailable);
         }
     }
 
@@ -223,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
                     if(LocationServices.FusedLocationApi.getLocationAvailability(apiClient).isLocationAvailable()){
                         lastKnowLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
                     }else{
-                        Snackbar.make(viewPager, R.string.main_error_location_notavailable, Snackbar.LENGTH_SHORT).show();
+                        showSnackbar(R.string.main_error_location_notavailable);
                     }
 
                 }
@@ -251,19 +281,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_RESOLVE_ERROR){
-            resolvingError = false;
-            if(resultCode == RESULT_OK){
-                if(!apiClient.isConnecting() && apiClient.isConnected()){
-                    apiClient.connect();
-                }
 
-            }
-        }
-    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -327,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         try {
             photoFile = File.createTempFile(imageFileName, ".jpg", storageDir);
         } catch (IOException e) {
-            Snackbar.make(viewPager, R.string.main_error_dispatch_camera, Snackbar.LENGTH_SHORT).show();
+            showSnackbar(R.string.main_error_dispatch_camera);
         }
         photoPath = photoFile.getAbsolutePath();
         return photoFile;
@@ -342,5 +360,60 @@ public class MainActivity extends AppCompatActivity implements MainView,
             list.add(targetIntent);
         }
         return list;
+    }
+    private String getRealPathFromURI(Uri contentURI) {
+        String result = null;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            result = contentURI.getPath();
+        } else {
+            if (contentURI.toString().contains("mediaKey")){
+                cursor.close();
+
+                try {
+                    File file = File.createTempFile("tempImg", ".jpg", getCacheDir());
+                    InputStream input = getContentResolver().openInputStream(contentURI);
+                    OutputStream output = new FileOutputStream(file);
+
+                    try {
+                        byte[] buffer = new byte[4 * 1024];
+                        int read;
+
+                        while ((read = input.read(buffer)) != -1) {
+                            output.write(buffer, 0, read);
+                        }
+                        output.flush();
+                        result = file.getAbsolutePath();
+                    } finally {
+                        output.close();
+                        input.close();
+                    }
+
+                } catch (Exception e) {
+                }
+            } else {
+                cursor.moveToFirst();
+                int dataColumn = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                result = cursor.getString(dataColumn);
+                cursor.close();
+            }
+
+        }
+        return result;
+    }
+
+    private void addToGallery() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File file = new File(photoPath);
+        Uri contentUri = Uri.fromFile(file);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+
+    }
+    private void showSnackbar(String msg){
+        Snackbar.make(viewPager, msg, Snackbar.LENGTH_SHORT).show();
+    }
+    private void showSnackbar(int strResource){
+        Snackbar.make(viewPager, strResource, Snackbar.LENGTH_SHORT).show();
     }
 }
