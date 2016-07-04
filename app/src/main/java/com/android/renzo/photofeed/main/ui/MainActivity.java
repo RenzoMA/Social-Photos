@@ -27,13 +27,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.renzo.photofeed.PhotoFeedApp;
-import com.android.renzo.photofeed.PhotoListFragment;
+import com.android.renzo.photofeed.photolist.ui.PhotoListFragment;
 import com.android.renzo.photofeed.PhotoMapFragment;
 import com.android.renzo.photofeed.R;
 import com.android.renzo.photofeed.login.ui.LoginActivity;
 import com.android.renzo.photofeed.main.MainPresenter;
 import com.android.renzo.photofeed.main.adapters.MainSectionsPagerAdapter;
-import com.android.renzo.photofeed.main.events.MainEvent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
