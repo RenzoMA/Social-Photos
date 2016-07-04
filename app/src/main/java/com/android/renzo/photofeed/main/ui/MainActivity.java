@@ -137,8 +137,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         Fragment[] fragments = new Fragment[]{new PhotoListFragment(),
         new PhotoMapFragment()};
 
-        adapter = new MainSectionsPagerAdapter(getSupportFragmentManager(), titles, fragments);
-
+        app.getMainComponent(this,getSupportFragmentManager(),fragments,titles).inject(this);
 
     }
 

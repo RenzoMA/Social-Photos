@@ -1,6 +1,8 @@
 package com.android.renzo.photofeed;
 
 import android.app.Application;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.android.renzo.photofeed.domain.di.DomainModule;
 import com.android.renzo.photofeed.libs.di.LibsModule;
@@ -8,6 +10,10 @@ import com.android.renzo.photofeed.login.di.DaggerLoginComponent;
 import com.android.renzo.photofeed.login.di.LoginComponent;
 import com.android.renzo.photofeed.login.di.LoginModule;
 import com.android.renzo.photofeed.login.ui.LoginView;
+import com.android.renzo.photofeed.main.di.DaggerMainComponent;
+import com.android.renzo.photofeed.main.di.MainComponent;
+import com.android.renzo.photofeed.main.di.MainModule;
+import com.android.renzo.photofeed.main.ui.MainView;
 import com.firebase.client.Firebase;
 
 /**
@@ -57,5 +63,14 @@ public class PhotoFeedApp extends Application {
 
     }
 
+    public MainComponent getMainComponent(MainView view, FragmentManager manager, Fragment[] fragments, String[] titles){
+        return DaggerMainComponent
+                .builder()
+                .photoFeedAppModule(photoFeedAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(null))
+                .mainModule(new MainModule(view,titles,fragments,manager))
+                .build();
+    }
 
 }
