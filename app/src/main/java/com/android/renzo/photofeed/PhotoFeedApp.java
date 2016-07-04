@@ -1,5 +1,6 @@
 package com.android.renzo.photofeed;
 
+import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,12 @@ import com.android.renzo.photofeed.main.di.DaggerMainComponent;
 import com.android.renzo.photofeed.main.di.MainComponent;
 import com.android.renzo.photofeed.main.di.MainModule;
 import com.android.renzo.photofeed.main.ui.MainView;
+import com.android.renzo.photofeed.photolist.di.DaggerPhotoListComponent;
+import com.android.renzo.photofeed.photolist.di.PhotoListComponent;
+import com.android.renzo.photofeed.photolist.di.PhotoListModule;
+import com.android.renzo.photofeed.photolist.ui.PhotoListFragment;
+import com.android.renzo.photofeed.photolist.ui.PhotoListView;
+import com.android.renzo.photofeed.photolist.ui.adapters.OnItemClickListener;
 import com.firebase.client.Firebase;
 
 /**
@@ -22,7 +29,7 @@ import com.firebase.client.Firebase;
 public class PhotoFeedApp extends Application {
     private final static String EMAIL_KEY = "email";
     private final static String SHARED_PREFERENCES_NAME = "UserPrefs";
-    private final static String FIREBASE_URL = "https://android-chat-exa.firebaseIO.com/";
+    private final static String FIREBASE_URL = "https://androidphoto.firebaseio.com/";
     private PhotoFeedAppModule photoFeedAppModule;
     private DomainModule domainModule;
 
@@ -70,6 +77,15 @@ public class PhotoFeedApp extends Application {
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(null))
                 .mainModule(new MainModule(view,titles,fragments,manager))
+                .build();
+    }
+
+    public PhotoListComponent getPhotoListComponent(PhotoListFragment fragment, PhotoListView view, OnItemClickListener onItemClickListener, Activity activity){
+        return DaggerPhotoListComponent
+                .builder().photoFeedAppModule(photoFeedAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(fragment))
+                .photoListModule(new PhotoListModule(view,onItemClickListener,activity))
                 .build();
     }
 

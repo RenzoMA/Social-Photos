@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.android.renzo.photofeed.PhotoFeedApp;
 import com.android.renzo.photofeed.R;
 import com.android.renzo.photofeed.entities.Photo;
 import com.android.renzo.photofeed.photolist.PhotoListPresenter;
@@ -62,7 +63,8 @@ public class PhotoListFragment extends Fragment implements PhotoListView, OnItem
     }
 
     private void setupInjection() {
-
+        PhotoFeedApp app = (PhotoFeedApp) getActivity().getApplication();
+        app.getPhotoListComponent(this,this,this,getActivity()).inject(this);
     }
 
     @Override
