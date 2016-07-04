@@ -138,35 +138,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         new PhotoMapFragment()};
 
         adapter = new MainSectionsPagerAdapter(getSupportFragmentManager(), titles, fragments);
-        sharedPreferences = getSharedPreferences(app.getSharedPreferencesName(), MODE_PRIVATE);
-        presenter = new MainPresenter() {
-            @Override
-            public void onCreate() {
 
-            }
-
-            @Override
-            public void onDestroy() {
-
-            }
-
-            @Override
-            public void logout() {
-
-            }
-
-            @Override
-            public void uploadPhoto(Location location, String path) {
-                if(path != null){
-                    showSnackbar(path);
-                }
-            }
-
-            @Override
-            public void onEVentMainThread(MainEvent event) {
-
-            }
-        };
 
     }
 
@@ -290,17 +262,17 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @Override
     public void onUploadInit() {
-
+        showSnackbar(R.string.main_notice_upload_init);
     }
 
     @Override
     public void onUploadComplete() {
-
+        showSnackbar(R.string.main_notice_upload_complete);
     }
 
     @Override
     public void onUploadError(String error) {
-
+        showSnackbar(error);
     }
     @OnClick(R.id.fab)
     public void takePicture(){
